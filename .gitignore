@@ -20,6 +20,9 @@
 # production
 /build
 
+
+
+
 # misc
 .DS_Store
 *.pem
@@ -36,9 +39,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-.inngest/main.db
 
-.inngest
 # typescript
 *.tsbuildinfo
 next-env.d.ts
