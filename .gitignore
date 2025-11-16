@@ -38,6 +38,7 @@ yarn-error.log*
 
 .inngest/main.db
 
+.inngest
 # typescript
 *.tsbuildinfo
 next-env.d.ts
