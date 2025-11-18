@@ -4,15 +4,24 @@ import {
   createAgent,
   createTool,
   createNetwork,
+  // Tool,
 } from "@inngest/agent-kit";
 import { inngest } from "./client";
 import { Sandbox } from "@e2b/code-interpreter";
 import { getSandbox, lastAssistantMessageContent } from "./utils";
 import { PROMPT } from "@/prompt";
+import { prisma } from "@/lib/db";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+// interface AgentState {
+//   summary: string;
+//   files: {
+//     [path: string]: string;
+//   };
+// }
+
+export const CodeAgentFunction = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandBoxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("lovable-nextjs-template");
@@ -144,10 +153,41 @@ export const helloWorld = inngest.createFunction(
       },
     });
     const result = await network.run(event.data.value);
+
+    const isError =
+      !result.state.data.summary ||
+      Object.keys(result.state.data.files || {}).length === 0;
+
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSandbox(sandBoxId);
       const host = sandbox.getHost(3000);
       return `http://${host}`;
+    });
+
+    await step.run("save-result", async () => {
+      if (isError) {
+        return await prisma.message.create({
+          data: {
+            content: "Something Went Wrong.Please try Again",
+            role: "ASSISTANT",
+            type: "ERROR",
+          },
+        });
+      }
+      return await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: "ASSISTANT",
+          type: "RESULT",
+          fragment: {
+            create: {
+              sandboxUrl: sandboxUrl,
+              title: "Fragment",
+              files: result.state.data.files,
+            },
+          },
+        },
+      });
     });
     return {
       url: sandboxUrl,
