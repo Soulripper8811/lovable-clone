@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
-  openai,
+  // openai,
+  gemini,
   createAgent,
   createTool,
   createNetwork,
@@ -31,13 +32,16 @@ export const CodeAgentFunction = inngest.createFunction(
       name: "code-agent",
       description: "An Expert Coding agent.",
       system: PROMPT,
-      model: openai({
-        model: "openai/gpt-oss-120b",
-        baseUrl: "https://api.groq.com/openai/v1",
-        defaultParameters: {
-          temperature: 0.1,
-        },
+      model: gemini({
+        model: "gemini-2.5-flash",
       }),
+      // model: openai({
+      //   model: "openai/gpt-oss-120b",
+      //   baseUrl: "https://api.groq.com/openai/v1",
+      //   defaultParameters: {
+      //     temperature: 0.1,
+      //   },
+      // }),
       tools: [
         createTool({
           name: "terminal",
