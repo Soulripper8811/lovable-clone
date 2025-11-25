@@ -17,19 +17,24 @@ const MessagesConatiner = ({
   setActiveFragment,
 }: Props) => {
   const bottomRef = useRef<HTMLDivElement>(null);
+
   const trpc = useTRPC();
+  const lastAssistantMessageIdRef = useRef<string | null>(null);
   const { data: messages } = useSuspenseQuery(
     trpc.message.getMany.queryOptions({ projectId }, { refetchInterval: 5000 })
   );
-  // useEffect(() => {
-  //   const lastAssitantMessageWithFragment = messages.findLast(
-  //     (message) => message.role === "ASSISTANT" && !!message.fragment
-  //   );
-  //   if (lastAssitantMessageWithFragment) {
-  //     //todo set active fragment
-  //     setActiveFragment(lastAssitantMessageWithFragment.fragment);
-  //   }
-  // }, [messages, setActiveFragment]);
+  useEffect(() => {
+    const lastAssistantMessage = messages?.findLast(
+      (message) => message.role === "ASSISTANT"
+    );
+    if (
+      lastAssistantMessage?.fragment &&
+      lastAssistantMessage.id !== lastAssistantMessageIdRef.current
+    ) {
+      setActiveFragment(lastAssistantMessage.fragment);
+      lastAssistantMessageIdRef.current = lastAssistantMessage.id;
+    }
+  }, [messages, setActiveFragment]);
   useEffect(() => {
     bottomRef.current?.scrollIntoView();
   }, [messages.length]);
