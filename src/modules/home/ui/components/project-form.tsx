@@ -14,6 +14,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PROJECT_TEMPLATES } from "../../constants";
+import { useClerk } from "@clerk/nextjs";
 
 const formSchema = z.object({
   value: z
@@ -24,6 +25,7 @@ const formSchema = z.object({
 const ProjectForm = () => {
   const router = useRouter();
   const trpc = useTRPC();
+  const clerk = useClerk();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,8 +40,11 @@ const ProjectForm = () => {
         router.push(`/projects/${data.id}`);
       },
       onError: (error) => {
-        // TODO: Redirect to  pricing page  on specific error
         toast.error(error.message);
+        if (error.data?.code === "UNAUTHORIZED") {
+          clerk.openSignIn();
+        }
+        // TODO: Redirect to  pricing page  on specific error
       },
     })
   );
