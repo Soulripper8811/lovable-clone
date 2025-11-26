@@ -34,7 +34,7 @@ const ProjectList = () => {
             <Link href={`/projects/${project.id}`}>
               <div className="flex items-center gap-x-4">
                 <Image
-                  src={"/next.svg"}
+                  src={"/logo.svg"}
                   alt="logo"
                   width={32}
                   height={32}

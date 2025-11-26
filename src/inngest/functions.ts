@@ -28,6 +28,7 @@ export const CodeAgentFunction = inngest.createFunction(
   async ({ event, step }) => {
     const sandBoxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("lovable-nextjs-template");
+      await sandbox.setTimeout(60_000 * 10 * 3); //for  30 minutes active sandbox
       return sandbox.sandboxId;
     });
 
@@ -40,8 +41,9 @@ export const CodeAgentFunction = inngest.createFunction(
             projectId: event.data.projectId,
           },
           orderBy: {
-            createdAt: "asc",
+            createdAt: "desc",
           },
+          take: 5,
         });
         for (const message of messages) {
           formattedMessages.push({
@@ -50,7 +52,7 @@ export const CodeAgentFunction = inngest.createFunction(
             content: message.content,
           });
         }
-        return formattedMessages;
+        return formattedMessages.reverse();
       }
     );
     const state = createState(
