@@ -13,7 +13,7 @@ const Page = () => {
       <section className="space-y-6 pt-[16vh] 2xl:pt-48 ">
         <div className="flex flex-col items-center">
           <Image
-            src={"/next.svg"}
+            src={"/logo.svg"}
             alt="logo"
             width={50}
             height={50}
