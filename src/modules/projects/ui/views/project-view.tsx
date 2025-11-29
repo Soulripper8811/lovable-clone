@@ -1,5 +1,5 @@
 "use client";
-import { Fragment } from "@/generated/prisma/client";
+import { Fragment } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ResizableHandle,
