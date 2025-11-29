@@ -55,7 +55,7 @@ const FragmentWeb = ({ data }: Props) => {
       </div>
       <iframe
         key={fragmentKey}
-        src={data.sandboxUrl}
+        src={data.sandboxUrl.replace("http://", "https://")}
         sandbox="allow-forms allow-scripts allow-same-origin"
         loading="lazy"
         className="h-full w-full"
