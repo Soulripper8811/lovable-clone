@@ -1,7 +1,7 @@
 "use client";
 import { Card } from "@/components/ui/card";
-import { Fragment } from "@/generated/prisma/client";
-import { MessageRole, MessageType } from "@/generated/prisma/enums";
+import { Fragment } from "@prisma/client";
+import { MessageRole, MessageType } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ChevronRightIcon, Code2Icon } from "lucide-react";
